@@ -8,7 +8,17 @@
   </head>
   <body>
     <main class="container">
-      <h1>💳 Finance Tracker</h1>
+      <div class="topbar">
+        <h1>💳 Finance Tracker</h1>
+        <label class="view-mode">
+          View:
+          <select id="viewModeSelect">
+            <option value="system">System</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+        </label>
+      </div>
 
       <section class="stats">
         <div class="stat"><label>This Week</label><strong id="weeklySpend">₹0</strong></div>

@@ -170,6 +170,24 @@ el('txnFilters').addEventListener('submit', async (e) => {
   await Promise.all([loadTransactions(), loadBreakdown()]);
 });
 
+function applyViewMode(mode) {
+  const m = ['system', 'light', 'dark'].includes(mode) ? mode : 'system';
+  document.documentElement.setAttribute('data-theme', m);
+  localStorage.setItem('viewMode', m);
+}
+
+function initViewMode() {
+  const saved = localStorage.getItem('viewMode') || 'system';
+  const select = el('viewModeSelect');
+  if (select) {
+    select.value = ['system', 'light', 'dark'].includes(saved) ? saved : 'system';
+    select.addEventListener('change', (e) => applyViewMode(e.target.value));
+  }
+  applyViewMode(saved);
+}
+
+initViewMode();
+
 Promise.all([loadCards(), loadSummary(), loadTransactions(), loadBreakdown()]).catch(() =>
   alert('Failed to load'),
 );
