@@ -1,0 +1,12 @@
+name = "finance-tracker"
+main = "src/worker.ts"
+compatibility_date = "2025-03-01"
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "finance_tracker"
+database_id = "73bb69e9-764b-4ce0-90c4-56da70f18fbd"
