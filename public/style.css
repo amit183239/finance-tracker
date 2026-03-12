@@ -1,1 +1,42 @@
-body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#f4f7fb;color:#0f172a;margin:0}.container{max-width:920px;margin:0 auto;padding:16px}h1{margin:4px 0 12px}h3{margin:0 0 8px}.card{background:#fff;border-radius:14px;padding:14px;margin:12px 0;box-shadow:0 2px 8px rgba(0,0,0,.05)}.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}.stat{background:#fff;border-radius:12px;padding:12px}.stat label{display:block;color:#64748b;font-size:12px}.stat strong{font-size:20px}.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}.card-tile{border:1px solid #e2e8f0;border-radius:12px;padding:10px;background:#f8fafc;border-left:6px solid #94a3b8;cursor:pointer}.card-top{display:flex;justify-content:space-between;gap:8px}.bank{font-size:12px;color:#475569}.l4{font-weight:700}.bank-hdfc{border-left-color:#0f4c81}.bank-icici{border-left-color:#f97316}.bank-axis{border-left-color:#a21caf}.bank-kotak{border-left-color:#dc2626}.bank-sbi{border-left-color:#2563eb}.bank-hsbc{border-left-color:#b91c1c}.bank-indusind{border-left-color:#0e7490}.bank-yes{border-left-color:#16a34a}.bank-default{border-left-color:#64748b}.cycle{margin-top:8px;font-size:13px;color:#0f172a}.meta{font-size:12px;color:#64748b;margin-top:4px}.filters{display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr auto;gap:8px;margin-bottom:10px}.filters input,.filters select,.filters button{padding:8px;border:1px solid #cbd5e1;border-radius:8px}.summary-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}.summary-head h2{margin:0}.summary-head select{margin-left:6px;padding:6px;border:1px solid #cbd5e1;border-radius:8px}.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.list{list-style:none;padding:0;margin:0}.list li{display:flex;justify-content:space-between;border-bottom:1px solid #e2e8f0;padding:10px 2px;gap:8px}.list.compact li{padding:8px 2px}.small{color:#64748b;font-size:12px}.hidden{display:none}.chip-row{display:flex;gap:8px;margin:8px 0 10px}.chip{border:1px solid #cbd5e1;background:#f8fafc;border-radius:999px;padding:6px 10px;cursor:pointer}.chip.active{background:#0f172a;color:#fff;border-color:#0f172a}@media (max-width:680px){.filters{grid-template-columns:1fr 1fr}.stats{grid-template-columns:1fr 1fr}.summary-grid{grid-template-columns:1fr}.summary-head{align-items:flex-start;flex-direction:column}}
+:root{color-scheme:light dark}
+:root[data-theme='light']{color-scheme:light}
+:root[data-theme='dark']{color-scheme:dark}
+
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#f4f7fb;color:#0f172a;margin:0}
+.container{max-width:920px;margin:0 auto;padding:16px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px}
+h1{margin:4px 0 12px}
+h3{margin:0 0 8px}
+.view-mode{display:flex;align-items:center;gap:8px;font-size:13px;color:#64748b}
+.view-mode select{padding:6px 8px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:#0f172a}
+.card{background:#fff;border-radius:14px;padding:14px;margin:12px 0;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{background:#fff;border-radius:12px;padding:12px}
+.stat label{display:block;color:#64748b;font-size:12px}
+.stat strong{font-size:20px}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.card-tile{border:1px solid #e2e8f0;border-radius:12px;padding:10px;background:#f8fafc;border-left:6px solid #94a3b8;cursor:pointer}
+.card-top{display:flex;justify-content:space-between;gap:8px}
+.bank{font-size:12px;color:#475569}.l4{font-weight:700}
+.bank-hdfc{border-left-color:#0f4c81}.bank-icici{border-left-color:#f97316}.bank-axis{border-left-color:#a21caf}.bank-kotak{border-left-color:#dc2626}.bank-sbi{border-left-color:#2563eb}.bank-hsbc{border-left-color:#b91c1c}.bank-indusind{border-left-color:#0e7490}.bank-yes{border-left-color:#16a34a}.bank-default{border-left-color:#64748b}
+.cycle{margin-top:8px;font-size:13px;color:#0f172a}.meta{font-size:12px;color:#64748b;margin-top:4px}
+.filters{display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr auto;gap:8px;margin-bottom:10px}
+.filters input,.filters select,.filters button{padding:8px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:#0f172a}
+.summary-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.summary-head h2{margin:0}
+.summary-head select{margin-left:6px;padding:6px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:#0f172a}
+.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.list{list-style:none;padding:0;margin:0}.list li{display:flex;justify-content:space-between;border-bottom:1px solid #e2e8f0;padding:10px 2px;gap:8px}.list.compact li{padding:8px 2px}
+.pager{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-top:10px}.pager button{padding:6px 10px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;cursor:pointer}
+.small{color:#64748b;font-size:12px}.hidden{display:none}
+.chip-row{display:flex;gap:8px;margin:8px 0 10px}.chip{border:1px solid #cbd5e1;background:#f8fafc;border-radius:999px;padding:6px 10px;cursor:pointer;color:#0f172a}.chip.active{background:#0f172a;color:#fff;border-color:#0f172a}
+@media (max-width:680px){.topbar{align-items:flex-start;flex-direction:column}.filters{grid-template-columns:1fr 1fr}.stats{grid-template-columns:1fr 1fr}.summary-grid{grid-template-columns:1fr}.summary-head{align-items:flex-start;flex-direction:column}}
+@media (prefers-color-scheme:dark){:root[data-theme='system'] body{background:#0b1220;color:#e5e7eb}:root[data-theme='system'] .card,:root[data-theme='system'] .stat{background:#111827;box-shadow:none;border:1px solid #1f2937}:root[data-theme='system'] .card-tile{background:#0f172a;border-color:#334155}:root[data-theme='system'] .bank,:root[data-theme='system'] .small,:root[data-theme='system'] .meta,:root[data-theme='system'] .stat label,:root[data-theme='system'] .view-mode{color:#9ca3af}:root[data-theme='system'] .cycle{color:#e5e7eb}:root[data-theme='system'] .list li{border-bottom-color:#334155}:root[data-theme='system'] .filters input,:root[data-theme='system'] .filters select,:root[data-theme='system'] .filters button,:root[data-theme='system'] .chip,:root[data-theme='system'] .view-mode select,:root[data-theme='system'] .summary-head select,:root[data-theme='system'] .pager button{background:#0f172a;color:#e5e7eb;border-color:#334155}:root[data-theme='system'] .chip.active{background:#e5e7eb;color:#0f172a;border-color:#e5e7eb}}
+:root[data-theme='dark'] body{background:#0b1220;color:#e5e7eb}
+:root[data-theme='dark'] .card,:root[data-theme='dark'] .stat{background:#111827;box-shadow:none;border:1px solid #1f2937}
+:root[data-theme='dark'] .card-tile{background:#0f172a;border-color:#334155}
+:root[data-theme='dark'] .bank,:root[data-theme='dark'] .small,:root[data-theme='dark'] .meta,:root[data-theme='dark'] .stat label,:root[data-theme='dark'] .view-mode{color:#9ca3af}
+:root[data-theme='dark'] .cycle{color:#e5e7eb}
+:root[data-theme='dark'] .list li{border-bottom-color:#334155}
+:root[data-theme='dark'] .filters input,:root[data-theme='dark'] .filters select,:root[data-theme='dark'] .filters button,:root[data-theme='dark'] .chip,:root[data-theme='dark'] .view-mode select,:root[data-theme='dark'] .summary-head select,:root[data-theme='dark'] .pager button{background:#0f172a;color:#e5e7eb;border-color:#334155}
+:root[data-theme='dark'] .chip.active{background:#e5e7eb;color:#0f172a;border-color:#e5e7eb}

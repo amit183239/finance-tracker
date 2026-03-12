@@ -5,6 +5,9 @@ let txnFilterQuery = '';
 let selectedCard = null;
 let cardMonthOffset = 0;
 let breakdownRange = 'month';
+let allTxns = [];
+let currentPage = 1;
+const PAGE_SIZE = 20;
 
 async function api(path, o = {}) {
   const r = await fetch(path, { headers: { 'content-type': 'application/json' }, ...o });
@@ -151,16 +154,32 @@ async function loadBreakdown() {
   renderBreakdownList('topCategories', b.topCategories);
 }
 
-async function loadTransactions() {
-  const txns = await api(`/api/transactions${txnFilterQuery ? `?${txnFilterQuery}` : ''}`);
+function renderTransactionsPage() {
   const list = el('txnsList');
   list.innerHTML = '';
 
-  txns.slice(0, 20).forEach((t) => {
+  const totalPages = Math.max(1, Math.ceil(allTxns.length / PAGE_SIZE));
+  if (currentPage > totalPages) currentPage = totalPages;
+
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const pageItems = allTxns.slice(start, start + PAGE_SIZE);
+
+  pageItems.forEach((t) => {
     const li = document.createElement('li');
-    li.innerHTML = `<div><strong>${t.merchant}</strong><div class='small'>${t.txn_date} • ${t.category || 'Uncategorized'} ${t.last4 ? `• ••••${t.last4}` : ''}</div></div><div><strong>${fmt(t.amount)}</strong></div>`;
+    const last4 = t.last4 ? `••••${t.last4}` : '••••----';
+    li.innerHTML = `<div><strong>${t.merchant}</strong><div class='small'>${t.txn_date} • ${t.category || 'Uncategorized'} • ${last4}</div></div><div><strong>${fmt(t.amount)}</strong></div>`;
     list.appendChild(li);
   });
+
+  el('pageInfo').textContent = `Page ${currentPage} / ${totalPages}`;
+  el('prevPageBtn').disabled = currentPage <= 1;
+  el('nextPageBtn').disabled = currentPage >= totalPages;
+}
+
+async function loadTransactions() {
+  allTxns = await api(`/api/transactions${txnFilterQuery ? `?${txnFilterQuery}` : ''}`);
+  currentPage = 1;
+  renderTransactionsPage();
 }
 
 el('cardCurrentBtn')?.addEventListener('click', async () => {
@@ -207,6 +226,39 @@ el('breakdownRange')?.addEventListener('change', async (e) => {
   breakdownRange = e.target.value || 'month';
   await loadBreakdown();
 });
+
+el('prevPageBtn')?.addEventListener('click', () => {
+  if (currentPage > 1) {
+    currentPage -= 1;
+    renderTransactionsPage();
+  }
+});
+
+el('nextPageBtn')?.addEventListener('click', () => {
+  const totalPages = Math.max(1, Math.ceil(allTxns.length / PAGE_SIZE));
+  if (currentPage < totalPages) {
+    currentPage += 1;
+    renderTransactionsPage();
+  }
+});
+
+function applyViewMode(mode) {
+  const m = ['system', 'light', 'dark'].includes(mode) ? mode : 'system';
+  document.documentElement.setAttribute('data-theme', m);
+  localStorage.setItem('viewMode', m);
+}
+
+function initViewMode() {
+  const saved = localStorage.getItem('viewMode') || 'system';
+  const select = el('viewModeSelect');
+  if (select) {
+    select.value = ['system', 'light', 'dark'].includes(saved) ? saved : 'system';
+    select.addEventListener('change', (e) => applyViewMode(e.target.value));
+  }
+  applyViewMode(saved);
+}
+
+initViewMode();
 
 Promise.all([loadCards(), loadSummary(), loadTransactions(), loadBreakdown()]).catch(() =>
   alert('Failed to load'),
