@@ -8,17 +8,7 @@
   </head>
   <body>
     <main class="container">
-      <div class="topbar">
-        <h1>💳 Finance Tracker</h1>
-        <label class="view-mode">
-          View:
-          <select id="viewModeSelect">
-            <option value="system">System</option>
-            <option value="light">Light</option>
-            <option value="dark">Dark</option>
-          </select>
-        </label>
-      </div>
+      <h1>💳 Finance Tracker</h1>
 
       <section class="stats">
         <div class="stat"><label>This Week</label><strong id="weeklySpend">₹0</strong></div>
@@ -40,7 +30,16 @@
       </section>
 
       <section class="card">
-        <h2>Merchant & Category Summary</h2>
+        <div class="summary-head">
+          <h2>Merchant & Category Summary</h2>
+          <label class="small">View
+            <select id="breakdownRange">
+              <option value="week">Week</option>
+              <option value="month" selected>Month</option>
+              <option value="quarter">Quarter</option>
+            </select>
+          </label>
+        </div>
         <div class="summary-grid">
           <div>
             <h3>Top Merchants</h3>

@@ -4,6 +4,7 @@ const fmt = (n) => `₹${Number(n || 0).toLocaleString('en-IN', { maximumFractio
 let txnFilterQuery = '';
 let selectedCard = null;
 let cardMonthOffset = 0;
+let breakdownRange = 'month';
 
 async function api(path, o = {}) {
   const r = await fetch(path, { headers: { 'content-type': 'application/json' }, ...o });
@@ -111,9 +112,41 @@ function renderBreakdownList(targetId, rows) {
   });
 }
 
+function breakdownBounds(range) {
+  const now = new Date();
+  const y = now.getUTCFullYear();
+  const m = now.getUTCMonth();
+  const d = now.getUTCDate();
+
+  if (range === 'week') {
+    const day = now.getUTCDay();
+    const diff = (day + 6) % 7;
+    const startDate = new Date(Date.UTC(y, m, d - diff));
+    const start = `${startDate.getUTCFullYear()}-${String(startDate.getUTCMonth() + 1).padStart(2, '0')}-${String(startDate.getUTCDate()).padStart(2, '0')}`;
+    const end = `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+    return { start, end };
+  }
+
+  if (range === 'quarter') {
+    const qStartMonth = Math.floor(m / 3) * 3;
+    const start = `${y}-${String(qStartMonth + 1).padStart(2, '0')}-01`;
+    const end = `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+    return { start, end };
+  }
+
+  const start = `${y}-${String(m + 1).padStart(2, '0')}-01`;
+  const end = `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+  return { start, end };
+}
+
 async function loadBreakdown() {
-  const q = txnFilterQuery ? `?${txnFilterQuery}` : '';
-  const b = await api(`/api/breakdown${q}`);
+  const p = new URLSearchParams(txnFilterQuery);
+  const { start, end } = breakdownBounds(breakdownRange);
+  p.set('start', start);
+  p.set('end', end);
+  const q = p.toString();
+
+  const b = await api(`/api/breakdown${q ? `?${q}` : ''}`);
   renderBreakdownList('topMerchants', b.topMerchants);
   renderBreakdownList('topCategories', b.topCategories);
 }
@@ -170,23 +203,10 @@ el('txnFilters').addEventListener('submit', async (e) => {
   await Promise.all([loadTransactions(), loadBreakdown()]);
 });
 
-function applyViewMode(mode) {
-  const m = ['system', 'light', 'dark'].includes(mode) ? mode : 'system';
-  document.documentElement.setAttribute('data-theme', m);
-  localStorage.setItem('viewMode', m);
-}
-
-function initViewMode() {
-  const saved = localStorage.getItem('viewMode') || 'system';
-  const select = el('viewModeSelect');
-  if (select) {
-    select.value = ['system', 'light', 'dark'].includes(saved) ? saved : 'system';
-    select.addEventListener('change', (e) => applyViewMode(e.target.value));
-  }
-  applyViewMode(saved);
-}
-
-initViewMode();
+el('breakdownRange')?.addEventListener('change', async (e) => {
+  breakdownRange = e.target.value || 'month';
+  await loadBreakdown();
+});
 
 Promise.all([loadCards(), loadSummary(), loadTransactions(), loadBreakdown()]).catch(() =>
   alert('Failed to load'),
