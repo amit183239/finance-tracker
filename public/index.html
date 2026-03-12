@@ -62,6 +62,17 @@
       </section>
 
       <section class="card">
+        <div class="summary-head">
+          <h2>Spending Chart</h2>
+          <div>
+            <button id="chartBackBtn" type="button" class="chip">Back</button>
+          </div>
+        </div>
+        <div id="chartTitle" class="small" style="margin-bottom:8px">Month-wise (last 6 months)</div>
+        <div id="spendChart" class="bar-chart"></div>
+      </section>
+
+      <section class="card">
         <h2>Recent Transactions</h2>
         <form id="txnFilters" class="filters">
           <input type="month" name="month" title="Month" />

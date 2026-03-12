@@ -8,6 +8,8 @@ let breakdownRange = 'month';
 let allTxns = [];
 let currentPage = 1;
 const PAGE_SIZE = 20;
+let chartLevel = 'month';
+let chartFocus = null;
 
 async function api(path, o = {}) {
   const r = await fetch(path, { headers: { 'content-type': 'application/json' }, ...o });
@@ -176,10 +178,82 @@ function renderTransactionsPage() {
   el('nextPageBtn').disabled = currentPage >= totalPages;
 }
 
+function sumBy(items, keyFn) {
+  const m = new Map();
+  items.forEach((t) => {
+    const k = keyFn(t);
+    m.set(k, (m.get(k) || 0) + Number(t.amount || 0));
+  });
+  return [...m.entries()].map(([label, total]) => ({ label, total }));
+}
+
+function weekStartFromDateStr(dateStr) {
+  const d = new Date(`${dateStr}T00:00:00Z`);
+  const day = d.getUTCDay();
+  const diff = (day + 6) % 7;
+  d.setUTCDate(d.getUTCDate() - diff);
+  return d.toISOString().slice(0, 10);
+}
+
+function renderChartBars(rows) {
+  const host = el('spendChart');
+  host.innerHTML = '';
+  if (!rows.length) {
+    host.innerHTML = "<div class='small'>No data</div>";
+    return;
+  }
+  const max = Math.max(...rows.map((r) => r.total), 1);
+  rows.forEach((r) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'bar';
+    b.style.height = `${Math.max(12, (r.total / max) * 180)}px`;
+    b.innerHTML = `<span class='bar-value'>${fmt(r.total)}</span><span class='bar-label'>${r.label}</span>`;
+    b.addEventListener('click', () => {
+      if (chartLevel === 'month') {
+        chartLevel = 'week';
+        chartFocus = r.label;
+        renderSpendingChart();
+      } else if (chartLevel === 'week') {
+        chartLevel = 'day';
+        chartFocus = r.label;
+        renderSpendingChart();
+      }
+    });
+    host.appendChild(b);
+  });
+}
+
+function renderSpendingChart() {
+  const debits = allTxns.filter((t) => t.txn_type === 'debit');
+  let rows = [];
+
+  if (chartLevel === 'month') {
+    rows = sumBy(debits, (t) => String(t.txn_date).slice(0, 7)).sort((a, b) => a.label.localeCompare(b.label)).slice(-6);
+    el('chartTitle').textContent = 'Month-wise (last 6 months)';
+    el('chartBackBtn').disabled = true;
+  } else if (chartLevel === 'week') {
+    const inMonth = debits.filter((t) => String(t.txn_date).startsWith(`${chartFocus}-`));
+    rows = sumBy(inMonth, (t) => weekStartFromDateStr(t.txn_date)).sort((a, b) => a.label.localeCompare(b.label));
+    el('chartTitle').textContent = `Week-wise in ${chartFocus}`;
+    el('chartBackBtn').disabled = false;
+  } else {
+    const inWeek = debits.filter((t) => weekStartFromDateStr(t.txn_date) === chartFocus);
+    rows = sumBy(inWeek, (t) => t.txn_date).sort((a, b) => a.label.localeCompare(b.label));
+    el('chartTitle').textContent = `Day-wise in week starting ${chartFocus}`;
+    el('chartBackBtn').disabled = false;
+  }
+
+  renderChartBars(rows);
+}
+
 async function loadTransactions() {
   allTxns = await api(`/api/transactions${txnFilterQuery ? `?${txnFilterQuery}` : ''}`);
   currentPage = 1;
+  chartLevel = 'month';
+  chartFocus = null;
   renderTransactionsPage();
+  renderSpendingChart();
 }
 
 el('cardCurrentBtn')?.addEventListener('click', async () => {
@@ -240,6 +314,18 @@ el('nextPageBtn')?.addEventListener('click', () => {
     currentPage += 1;
     renderTransactionsPage();
   }
+});
+
+el('chartBackBtn')?.addEventListener('click', () => {
+  if (chartLevel === 'day') {
+    chartLevel = 'week';
+    const anyInMonth = allTxns.find((t) => weekStartFromDateStr(t.txn_date) === chartFocus);
+    chartFocus = anyInMonth ? String(anyInMonth.txn_date).slice(0, 7) : null;
+  } else if (chartLevel === 'week') {
+    chartLevel = 'month';
+    chartFocus = null;
+  }
+  renderSpendingChart();
 });
 
 function applyViewMode(mode) {
