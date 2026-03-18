@@ -19,80 +19,112 @@
         </label>
       </div>
 
-      <section class="stats">
-        <div class="stat"><label>This Week</label><strong id="weeklySpend">₹0</strong></div>
-        <div class="stat"><label>This Month</label><strong id="monthlySpend">₹0</strong></div>
-      </section>
+      <div class="tabbar">
+        <button id="tabDashboard" class="chip active" type="button">Dashboard</button>
+        <button id="tabBills" class="chip" type="button">Bills</button>
+      </div>
 
-      <section class="card">
-        <h2>Cards</h2>
-        <div id="cardsGrid" class="cards-grid"></div>
-      </section>
+      <div id="dashboardView">
+        <section class="stats">
+          <div class="stat"><label>This Week</label><strong id="weeklySpend">₹0</strong></div>
+          <div class="stat"><label>This Month</label><strong id="monthlySpend">₹0</strong></div>
+        </section>
 
-      <section id="cardDetail" class="card hidden">
-        <h2 id="cardDetailTitle">Card Transactions</h2>
-        <div class="chip-row">
-          <button id="cardCurrentBtn" class="chip active" type="button">Current Month</button>
-          <button id="cardPrevBtn" class="chip" type="button">Previous Month</button>
-        </div>
-        <ul id="cardTxnsList" class="list"></ul>
-      </section>
+        <section class="card">
+          <h2>Cards</h2>
+          <div id="cardsGrid" class="cards-grid"></div>
+        </section>
 
-      <section class="card">
-        <div class="summary-head">
-          <h2>Merchant & Category Summary</h2>
-          <label class="small">View
-            <select id="breakdownRange">
-              <option value="week">Week</option>
-              <option value="month" selected>Month</option>
-              <option value="quarter">Quarter</option>
+        <section id="cardDetail" class="card hidden">
+          <h2 id="cardDetailTitle">Card Transactions</h2>
+          <div class="chip-row">
+            <button id="cardCurrentBtn" class="chip active" type="button">Current Month</button>
+            <button id="cardPrevBtn" class="chip" type="button">Previous Month</button>
+          </div>
+          <ul id="cardTxnsList" class="list"></ul>
+        </section>
+
+        <section class="card">
+          <div class="summary-head">
+            <h2>Merchant & Category Summary</h2>
+            <label class="small">View
+              <select id="breakdownRange">
+                <option value="week">Week</option>
+                <option value="month" selected>Month</option>
+                <option value="quarter">Quarter</option>
+              </select>
+            </label>
+          </div>
+          <div class="summary-grid">
+            <div>
+              <h3>Top Merchants</h3>
+              <ul id="topMerchants" class="list compact"></ul>
+            </div>
+            <div>
+              <h3>Top Categories</h3>
+              <ul id="topCategories" class="list compact"></ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="summary-head">
+            <h2>Spending Chart</h2>
+            <div>
+              <button id="chartBackBtn" type="button" class="chip">Back</button>
+            </div>
+          </div>
+          <div id="chartTitle" class="small" style="margin-bottom:8px">Month-wise (last 6 months)</div>
+          <div id="spendChart" class="bar-chart"></div>
+        </section>
+
+        <section class="card">
+          <h2>Recent Transactions</h2>
+          <form id="txnFilters" class="filters">
+            <input type="month" name="month" title="Month" />
+            <input type="date" name="start" />
+            <input type="date" name="end" />
+            <select name="type">
+              <option value="">All</option>
+              <option value="debit">Debit</option>
+              <option value="credit">Credit</option>
             </select>
-          </label>
-        </div>
-        <div class="summary-grid">
-          <div>
-            <h3>Top Merchants</h3>
-            <ul id="topMerchants" class="list compact"></ul>
+            <input type="text" name="q" placeholder="Search" />
+            <button type="submit">Apply</button>
+          </form>
+          <ul id="txnsList" class="list"></ul>
+          <div class="pager">
+            <button id="prevPageBtn" type="button">Prev</button>
+            <span id="pageInfo" class="small">Page 1</span>
+            <button id="nextPageBtn" type="button">Next</button>
           </div>
-          <div>
-            <h3>Top Categories</h3>
-            <ul id="topCategories" class="list compact"></ul>
-          </div>
-        </div>
-      </section>
+        </section>
+      </div>
 
-      <section class="card">
-        <div class="summary-head">
-          <h2>Spending Chart</h2>
-          <div>
-            <button id="chartBackBtn" type="button" class="chip">Back</button>
+      <div id="billsView" class="hidden">
+        <section class="card">
+          <h2>Bills</h2>
+          <p class="small">Credit-card bill tracker from bill/statement emails.</p>
+          <div class="table-wrap">
+            <table class="bills-table">
+              <thead>
+                <tr>
+                  <th>Card</th>
+                  <th>Bank</th>
+                  <th>Bill Month</th>
+                  <th>Statement Date</th>
+                  <th>Due Date</th>
+                  <th>Bill Amount</th>
+                  <th>Min Due</th>
+                  <th>Status</th>
+                  <th>Source</th>
+                </tr>
+              </thead>
+              <tbody id="billsTableBody"></tbody>
+            </table>
           </div>
-        </div>
-        <div id="chartTitle" class="small" style="margin-bottom:8px">Month-wise (last 6 months)</div>
-        <div id="spendChart" class="bar-chart"></div>
-      </section>
-
-      <section class="card">
-        <h2>Recent Transactions</h2>
-        <form id="txnFilters" class="filters">
-          <input type="month" name="month" title="Month" />
-          <input type="date" name="start" />
-          <input type="date" name="end" />
-          <select name="type">
-            <option value="">All</option>
-            <option value="debit">Debit</option>
-            <option value="credit">Credit</option>
-          </select>
-          <input type="text" name="q" placeholder="Search" />
-          <button type="submit">Apply</button>
-        </form>
-        <ul id="txnsList" class="list"></ul>
-        <div class="pager">
-          <button id="prevPageBtn" type="button">Prev</button>
-          <span id="pageInfo" class="small">Page 1</span>
-          <button id="nextPageBtn" type="button">Next</button>
-        </div>
-      </section>
+        </section>
+      </div>
     </main>
     <script src="/app.js" type="module"></script>
   </body>

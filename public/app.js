@@ -10,6 +10,7 @@ let currentPage = 1;
 const PAGE_SIZE = 20;
 let chartLevel = 'month';
 let chartFocus = null;
+let activeTab = 'dashboard';
 
 async function api(path, o = {}) {
   const r = await fetch(path, { headers: { 'content-type': 'application/json' }, ...o });
@@ -334,6 +335,50 @@ function applyViewMode(mode) {
   localStorage.setItem('viewMode', m);
 }
 
+function loadBills() {
+  return api('/api/bills')
+    .then((rows) => {
+      const body = el('billsTableBody');
+      if (!body) return;
+      body.innerHTML = '';
+      if (!rows?.length) {
+        body.innerHTML = "<tr><td colspan='9' class='small'>No bill rows yet</td></tr>";
+        return;
+      }
+      rows.forEach((b) => {
+        const tr = document.createElement('tr');
+        const amount = Number(b.bill_amount || 0);
+        const status = (String(b.status || '').toLowerCase() === 'paid' || amount <= 0) ? 'Paid' : 'Unpaid';
+        tr.innerHTML = `
+          <td><strong>•••• ${b.last4 || '----'}</strong></td>
+          <td>${b.bank || '-'}</td>
+          <td>${b.bill_month || '-'}</td>
+          <td>${b.statement_date || '-'}</td>
+          <td>${b.due_date || '-'}</td>
+          <td><strong>${b.bill_amount != null ? fmt(b.bill_amount) : '-'}</strong></td>
+          <td>${b.min_due != null ? fmt(b.min_due) : '-'}</td>
+          <td><span class="bill-status ${status.toLowerCase()}">${status}</span></td>
+          <td class='small'>${b.source || '-'}</td>
+        `;
+        body.appendChild(tr);
+      });
+    })
+    .catch(() => {
+      const body = el('billsTableBody');
+      if (body) body.innerHTML = "<tr><td colspan='9' class='small'>Failed to load bills</td></tr>";
+    });
+}
+
+function setTab(tab) {
+  activeTab = tab;
+  const isBills = tab === 'bills';
+  el('dashboardView')?.classList.toggle('hidden', isBills);
+  el('billsView')?.classList.toggle('hidden', !isBills);
+  el('tabDashboard')?.classList.toggle('active', !isBills);
+  el('tabBills')?.classList.toggle('active', isBills);
+  if (isBills) loadBills();
+}
+
 function initViewMode() {
   const saved = localStorage.getItem('viewMode') || 'system';
   const select = el('viewModeSelect');
@@ -344,8 +389,12 @@ function initViewMode() {
   applyViewMode(saved);
 }
 
-initViewMode();
+el('tabDashboard')?.addEventListener('click', () => setTab('dashboard'));
+el('tabBills')?.addEventListener('click', () => setTab('bills'));
 
-Promise.all([loadCards(), loadSummary(), loadTransactions(), loadBreakdown()]).catch(() =>
+initViewMode();
+setTab('dashboard');
+
+Promise.all([loadCards(), loadSummary(), loadTransactions(), loadBreakdown(), loadBills()]).catch(() =>
   alert('Failed to load'),
 );

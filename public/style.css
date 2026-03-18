@@ -32,7 +32,15 @@ h3{margin:0 0 8px}
 .bar{min-width:72px;border:1px solid #cbd5e1;border-radius:10px 10px 6px 6px;background:#e2e8f0;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding:6px;cursor:pointer}
 .bar-value{font-size:11px;color:#0f172a;margin-bottom:4px;white-space:nowrap}.bar-label{font-size:11px;color:#334155;white-space:nowrap}
 .small{color:#64748b;font-size:12px}.hidden{display:none}
+.tabbar{display:flex;gap:8px;margin:8px 0 12px}
 .chip-row{display:flex;gap:8px;margin:8px 0 10px}.chip{border:1px solid #cbd5e1;background:#f8fafc;border-radius:999px;padding:6px 10px;cursor:pointer;color:#0f172a}.chip.active{background:#0f172a;color:#fff;border-color:#0f172a}
+.table-wrap{overflow:auto}
+.bills-table{width:100%;border-collapse:collapse;min-width:760px}
+.bills-table th,.bills-table td{border-bottom:1px solid #e2e8f0;padding:10px 8px;text-align:left;vertical-align:top}
+.bills-table th{font-size:12px;color:#64748b;font-weight:600}
+.bill-status{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;font-weight:600}
+.bill-status.paid{background:#dcfce7;color:#166534}
+.bill-status.unpaid{background:#fee2e2;color:#991b1b}
 @media (max-width:680px){.topbar{align-items:flex-start;flex-direction:column}.filters{grid-template-columns:1fr 1fr}.stats{grid-template-columns:1fr 1fr}.summary-grid{grid-template-columns:1fr}.summary-head{align-items:flex-start;flex-direction:column}}
 @media (prefers-color-scheme:dark){:root[data-theme='system'] body{background:#0b1220;color:#e5e7eb}:root[data-theme='system'] .card,:root[data-theme='system'] .stat{background:#111827;box-shadow:none;border:1px solid #1f2937}:root[data-theme='system'] .card-tile{background:#0f172a;border-color:#334155}:root[data-theme='system'] .bank,:root[data-theme='system'] .small,:root[data-theme='system'] .meta,:root[data-theme='system'] .stat label,:root[data-theme='system'] .view-mode{color:#9ca3af}:root[data-theme='system'] .cycle{color:#e5e7eb}:root[data-theme='system'] .list li{border-bottom-color:#334155}:root[data-theme='system'] .filters input,:root[data-theme='system'] .filters select,:root[data-theme='system'] .filters button,:root[data-theme='system'] .chip,:root[data-theme='system'] .view-mode select,:root[data-theme='system'] .summary-head select,:root[data-theme='system'] .pager button{background:#0f172a;color:#e5e7eb;border-color:#334155}:root[data-theme='system'] .bar{background:#1f2937;border-color:#334155}:root[data-theme='system'] .bar-label,:root[data-theme='system'] .bar-value{color:#e5e7eb}:root[data-theme='system'] .chip.active{background:#e5e7eb;color:#0f172a;border-color:#e5e7eb}}
 :root[data-theme='dark'] body{background:#0b1220;color:#e5e7eb}
@@ -45,3 +53,4 @@ h3{margin:0 0 8px}
 :root[data-theme='dark'] .bar{background:#1f2937;border-color:#334155}
 :root[data-theme='dark'] .bar-label,:root[data-theme='dark'] .bar-value{color:#e5e7eb}
 :root[data-theme='dark'] .chip.active{background:#e5e7eb;color:#0f172a;border-color:#e5e7eb}
+:root[data-theme='dark'] .bills-table th,:root[data-theme='dark'] .bills-table td{border-bottom-color:#334155}
