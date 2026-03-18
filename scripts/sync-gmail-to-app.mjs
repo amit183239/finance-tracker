@@ -52,16 +52,20 @@ function extractAmountLoose(t) {
 function normalizeMerchant(t) {
   let merchant = (t.merchant || '').trim();
   const snippet = String(t.snippet || '');
+  const cardText = `${t.card || ''} ${t.subject || ''} ${t.snippet || ''}`;
+  const last4 = cardText.match(/(?:xx|\*{2,4}|ending\s*(?:in|with)?\s*)(\d{4})/i)?.[1] || null;
   const maybePaymentTo = snippet.match(/for\s+payment\s+to\s+(.+?)(?:\s+on\s|\s+at\s|\.|,|$)/i)?.[1]?.trim();
 
   if (!merchant || /credit card no ending/i.test(merchant) || /^customer\.?care$/i.test(merchant)) {
     if (maybePaymentTo) merchant = maybePaymentTo;
   }
 
-  if (!merchant || /credit card no ending/i.test(merchant)) {
+  if (!merchant || /credit card no ending/i.test(merchant) || /^customer\.?care$/i.test(merchant)) {
     if (/hsbc/i.test(`${t.subject || ''} ${t.from || ''}`)) merchant = 'HSBC Card Purchase';
+    else if (/icici/i.test(`${t.subject || ''} ${t.from || ''}`) && last4) merchant = `ICICI Card XX${last4} Transaction`;
   }
-  if (!merchant) merchant = (t.subject || 'Unknown').trim();
+
+  if (!merchant || /^customer\.?care$/i.test(merchant)) merchant = (t.subject || 'Unknown').trim();
   return merchant.slice(0, 120);
 }
 
@@ -153,7 +157,7 @@ for (const t of (parsed.transactions || [])) {
   if (card_id == null) { skipped++; continue; }
 
   const m = merchant.toLowerCase();
-  if (m === 'rates.' || m === 'with us' || m === 'customer.care' || m === 'emis hello' || m === 'left' || m === 'does this mean' || m === 'february 16' || m === 'connect.' || m.includes('sole discretion of icici bank') || m.includes('take care of your payments with just a few tap') || m.includes('this message or mail address. for any queries') || m.includes('maintain your credit score') || m.includes('unsubscribe') || m.includes('can be levied on any single transaction') || m.includes('policy status remains in-force') || m.includes('your premiums are paid on time') || m.includes('to emis')) { skipped++; continue; }
+  if (m === 'rates.' || m === 'with us' || m === 'emis hello' || m === 'left' || m === 'does this mean' || m === 'february 16' || m === 'connect.' || m.includes('sole discretion of icici bank') || m.includes('take care of your payments with just a few tap') || m.includes('this message or mail address. for any queries') || m.includes('maintain your credit score') || m.includes('unsubscribe') || m.includes('can be levied on any single transaction') || m.includes('policy status remains in-force') || m.includes('your premiums are paid on time') || m.includes('to emis')) { skipped++; continue; }
 
   if (amount >= 100000 && (m.includes('available credit limit') || m.includes('available credit l') || m.includes('loan'))) { skipped++; continue; }
 
