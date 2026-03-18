@@ -11,6 +11,7 @@ const PAGE_SIZE = 20;
 let chartLevel = 'month';
 let chartFocus = null;
 let activeTab = 'dashboard';
+let billMonthFilter = '';
 
 async function api(path, o = {}) {
   const r = await fetch(path, { headers: { 'content-type': 'application/json' }, ...o });
@@ -336,7 +337,8 @@ function applyViewMode(mode) {
 }
 
 function loadBills() {
-  return api('/api/bills')
+  const q = billMonthFilter ? `?month=${encodeURIComponent(billMonthFilter)}` : '';
+  return api(`/api/bills${q}`)
     .then((rows) => {
       const body = el('billsTableBody');
       if (!body) return;
@@ -392,7 +394,23 @@ function initViewMode() {
 el('tabDashboard')?.addEventListener('click', () => setTab('dashboard'));
 el('tabBills')?.addEventListener('click', () => setTab('bills'));
 
+el('billFilters')?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const m = String(new FormData(e.target).get('month') || '').trim();
+  billMonthFilter = m;
+  await loadBills();
+});
+
+function initBillMonthFilter() {
+  const now = new Date();
+  const currentMonth = `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, '0')}`;
+  billMonthFilter = currentMonth;
+  const input = el('billMonthFilter');
+  if (input) input.value = currentMonth;
+}
+
 initViewMode();
+initBillMonthFilter();
 setTab('dashboard');
 
 Promise.all([loadCards(), loadSummary(), loadTransactions(), loadBreakdown(), loadBills()]).catch(() =>
