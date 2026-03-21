@@ -154,7 +154,9 @@ for (const t of parsed.transactions || []) {
   // Need at least a due date or an amount to be useful.
   if (!dueDate && !billAmount) { skipped++; continue; }
 
-  const billMonthBase = dueDate || statementDate || new Date().toISOString().slice(0, 10);
+  // Prefer statement cycle month for bill grouping (more intuitive in UI),
+  // then fallback to due-date month.
+  const billMonthBase = statementDate || dueDate || new Date().toISOString().slice(0, 10);
   const billMonth = billMonthBase.slice(0, 7);
 
   await api('/api/bills', {
